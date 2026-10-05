@@ -1,22 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f6f7f9;
+  --bg: #fbfbf9;
   --card: #ffffff;
-  --ink: #12161c;
-  --muted: #566170;
-  --line: #d3d9e1;
-  --brand: #1b4fb8;
+  --ink: #15130c;
+  --muted: #5d5a4c;
+  --line: #dcdacd;
+  --band: #f2c230;
+  --buy: #5b21b6;
+  --rent: #d9480f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1218;
-    --card: #151b23;
-    --ink: #eaeff5;
-    --muted: #94a1b2;
-    --line: #2a3441;
-    --brand: #6b9bf2;
+    --bg: #12110c;
+    --card: #1a1810;
+    --ink: #f4f2e8;
+    --muted: #a8a58f;
+    --line: #38352a;
+    --buy: #a78bfa;
+    --rent: #ff8a4c;
   }
 }
 
@@ -33,6 +36,6 @@ input[type="number"] {
 
 input[type="number"]:focus-visible,
 button:focus-visible {
-  outline: 3px solid var(--brand);
+  outline: 3px solid var(--buy);
   outline-offset: 2px;
 }

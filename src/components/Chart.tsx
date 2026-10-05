@@ -29,12 +29,12 @@ export function Chart({ rows }: { rows: YearRow[] }) {
           </text>
         ) : null,
       )}
-      <polyline points={line((r) => r.buyNet)} fill="none" stroke="#1b4fb8" strokeWidth={3} />
-      <polyline points={line((r) => r.rentNet)} fill="none" stroke="#c2570c" strokeWidth={3} />
+      <polyline points={line((r) => r.buyNet)} fill="none" stroke="var(--buy)" strokeWidth={3} />
+      <polyline points={line((r) => r.rentNet)} fill="none" stroke="var(--rent)" strokeWidth={3} />
       {rows.length > 0 && (
         <>
-          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].buyNet) + 4} fontSize={12} fontWeight={700} fill="#1b4fb8">Buy</text>
-          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].rentNet) + 4} fontSize={12} fontWeight={700} fill="#c2570c">Rent</text>
+          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].buyNet) + 4} fontSize={12} fontWeight={700} fill="var(--buy)">Buy</text>
+          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].rentNet) + 4} fontSize={12} fontWeight={700} fill="var(--rent)">Rent</text>
         </>
       )}
     </svg>

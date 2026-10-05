@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Libre_Franklin } from "next/font/google";
+import { Epilogue } from "next/font/google";
 import "./globals.css";
 
-const body = Libre_Franklin({ variable: "--font-body", subsets: ["latin"] });
+const body = Epilogue({ variable: "--font-body", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Rent vs Buy",

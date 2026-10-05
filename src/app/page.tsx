@@ -33,8 +33,6 @@ const GROUPS: { title: string; fields: Field[] }[] = [
   { title: "How long", fields: [{ key: "horizonYears", label: "How long you will stay", step: 1, suffix: "yrs" }] },
 ];
 
-const muted = { color: "var(--muted)" };
-
 export default function Home() {
   const [v, setV] = useState<Inputs>(DEFAULTS);
   const res = useMemo(() => simulate(v), [v]);
@@ -51,44 +49,46 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
-      <header className="flex items-center gap-3 border-b-2 pb-4" style={{ borderColor: "var(--ink)" }}>
-        <svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true">
-          <rect width="36" height="36" fill="var(--ink)" />
-          <path d="M8 19 18 10l10 9" fill="none" stroke="#6b9bf2" strokeWidth="3" strokeLinejoin="round" />
-          <path d="M12 18v9h12v-9" fill="none" stroke="#fff" strokeWidth="3" />
-        </svg>
-        <h1 className="text-xl font-extrabold tracking-tight">Rent vs Buy</h1>
-      </header>
-
-      <section className="py-10" aria-live="polite">
-        <p className="max-w-3xl text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-          After {v.horizonYears} years, {buyWins ? "buying" : "renting"} leaves you {money(Math.abs(last.buyNet - last.rentNet))} ahead.
-        </p>
-        <p className="mt-3 text-lg" style={muted}>
-          {res.breakEvenYear
-            ? `Buying catches up with renting in year ${res.breakEvenYear}.`
-            : "Buying does not catch up with renting in this time."}
-        </p>
-        <dl className="mt-8 grid gap-6 border-t pt-5 sm:grid-cols-3" style={{ borderColor: "var(--line)" }}>
-          {[
-            ["Monthly mortgage", money(res.monthlyMortgage)],
-            ["Monthly cost of owning, year 1", money(res.monthlyOwnCost)],
-            ["Monthly rent, year 1", money(v.rent)],
-          ].map(([k, val]) => (
-            <div key={k}>
-              <dt className="text-sm" style={muted}>{k}</dt>
-              <dd className="mt-1 text-2xl font-bold">{val}</dd>
-            </div>
-          ))}
-        </dl>
+    <main>
+      <section style={{ background: "var(--band)", color: "#15130c" }} aria-live="polite">
+        <div className="mx-auto max-w-6xl px-5 pb-12 pt-5 sm:px-8">
+          <h1 className="text-lg font-black tracking-tight">Rent vs Buy</h1>
+          <p className="mt-12 max-w-4xl text-4xl font-black leading-[1.02] tracking-tight sm:text-6xl">
+            After {v.horizonYears} years, {buyWins ? "buying" : "renting"} leaves you {money(Math.abs(last.buyNet - last.rentNet))} ahead.
+          </p>
+          <p className="mt-4 text-xl font-medium">
+            {res.breakEvenYear
+              ? `Buying catches up with renting in year ${res.breakEvenYear}.`
+              : "Buying does not catch up with renting in this time."}
+          </p>
+          <dl className="mt-10 grid gap-5 border-t-2 border-[#15130c] pt-4 sm:grid-cols-3">
+            {[
+              ["Monthly mortgage", money(res.monthlyMortgage)],
+              ["Monthly cost of owning, year 1", money(res.monthlyOwnCost)],
+              ["Monthly rent, year 1", money(v.rent)],
+            ].map(([k, val]) => (
+              <div key={k}>
+                <dt className="text-sm font-medium">{k}</dt>
+                <dd className="text-3xl font-black">{val}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
-      <div className="grid gap-10 lg:grid-cols-[340px_1fr]">
-        <section aria-label="Assumptions">
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+        <section>
+          <h2 className="text-2xl font-black">What you would own, year by year</h2>
+          <p className="mb-3 mt-1 text-base" style={{ color: "var(--muted)" }}>After selling costs, if you buy and if you rent.</p>
+          <Chart rows={res.rows} />
+        </section>
+
+        <section aria-label="Assumptions" className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-3">
           {GROUPS.map((g) => (
-            <div key={g.title} className="mb-7">
-              <h2 className="border-b-2 pb-1 text-lg font-bold" style={{ borderColor: "var(--ink)" }}>{g.title}</h2>
+            <div key={g.title}>
+              <h2 className="border-b-4 pb-1 text-xl font-black" style={{ borderColor: g.title === "If you buy" ? "var(--buy)" : g.title === "If you rent" ? "var(--rent)" : "var(--ink)" }}>
+                {g.title}
+              </h2>
               {g.fields.map((f) => (
                 <label key={f.key} className="flex items-center justify-between gap-3 border-b py-2 text-sm" style={{ borderColor: "var(--line)" }}>
                   <span>{f.label}</span>
@@ -100,57 +100,51 @@ export default function Home() {
                       step={f.step}
                       value={v[f.key]}
                       onChange={(e) => set(f.key, e.target.value)}
-                      className="w-28 bg-transparent px-1 py-1 text-right text-base font-semibold"
+                      className="w-24 bg-transparent px-1 py-1 text-right text-base font-bold"
                     />
-                    <span className="w-7 text-xs" style={muted}>{f.suffix}</span>
+                    <span className="w-7 text-xs" style={{ color: "var(--muted)" }}>{f.suffix}</span>
                   </span>
                 </label>
               ))}
+              {g.title === "How long" && (
+                <button type="button" onClick={() => setV(DEFAULTS)} className="mt-5 text-sm font-bold underline underline-offset-4">
+                  Reset to sample numbers
+                </button>
+              )}
             </div>
           ))}
-          <button type="button" onClick={() => setV(DEFAULTS)} className="text-sm font-medium underline underline-offset-4">
-            Reset to sample numbers
-          </button>
         </section>
 
-        <section className="space-y-8">
-          <div>
-            <h2 className="text-lg font-bold">Net worth over time</h2>
-            <p className="mb-2 text-sm" style={muted}>What you would own after selling costs, in each case.</p>
-            <Chart rows={res.rows} />
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <caption className="pb-2 text-left text-lg font-bold">Year by year</caption>
-              <thead>
-                <tr className="border-b-2 text-left" style={{ borderColor: "var(--ink)" }}>
-                  <th className="py-2 pr-3">Year</th>
-                  <th className="py-2 pr-3 text-right">Home value</th>
-                  <th className="py-2 pr-3 text-right">Loan left</th>
-                  <th className="py-2 pr-3 text-right">Buy net</th>
-                  <th className="py-2 text-right">Rent net</th>
+        <div className="mt-12 overflow-x-auto">
+          <table className="w-full text-sm">
+            <caption className="pb-2 text-left text-2xl font-black">Year by year</caption>
+            <thead>
+              <tr className="border-b-2 text-left" style={{ borderColor: "var(--ink)" }}>
+                <th className="py-2 pr-3">Year</th>
+                <th className="py-2 pr-3 text-right">Home value</th>
+                <th className="py-2 pr-3 text-right">Loan left</th>
+                <th className="py-2 pr-3 text-right">If you buy</th>
+                <th className="py-2 text-right">If you rent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {res.rows.map((r) => (
+                <tr key={r.year} className="border-b" style={{ borderColor: "var(--line)" }}>
+                  <td className="py-2 pr-3">{r.year}</td>
+                  <td className="py-2 pr-3 text-right">{money(r.homeValue)}</td>
+                  <td className="py-2 pr-3 text-right">{money(r.balance)}</td>
+                  <td className="py-2 pr-3 text-right font-bold" style={{ color: "var(--buy)" }}>{money(r.buyNet)}</td>
+                  <td className="py-2 text-right font-bold" style={{ color: "var(--rent)" }}>{money(r.rentNet)}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {res.rows.map((r) => (
-                  <tr key={r.year} className="border-b" style={{ borderColor: "var(--line)" }}>
-                    <td className="py-2 pr-3">{r.year}</td>
-                    <td className="py-2 pr-3 text-right">{money(r.homeValue)}</td>
-                    <td className="py-2 pr-3 text-right">{money(r.balance)}</td>
-                    <td className="py-2 pr-3 text-right font-semibold" style={{ color: "var(--brand)" }}>{money(r.buyNet)}</td>
-                    <td className="py-2 text-right font-semibold" style={{ color: "#c2570c" }}>{money(r.rentNet)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <footer className="mt-12 border-t pt-4 text-sm" style={{ borderColor: "var(--line)", color: "var(--muted)" }}>
-        Demo project with sample numbers. These are estimates, not financial advice. Nothing is saved or sent anywhere.
-      </footer>
+        <footer className="mt-12 border-t pt-4 text-sm" style={{ borderColor: "var(--line)", color: "var(--muted)" }}>
+          A demo with sample numbers. These are estimates, not financial advice, and nothing is saved or sent anywhere.
+        </footer>
+      </div>
     </main>
   );
 }
