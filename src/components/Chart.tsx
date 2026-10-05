@@ -3,7 +3,7 @@ import type { YearRow } from "@/lib/calc";
 export function Chart({ rows }: { rows: YearRow[] }) {
   const W = 640;
   const H = 280;
-  const pad = { l: 56, r: 12, t: 12, b: 28 };
+  const pad = { l: 56, r: 48, t: 12, b: 28 };
   const max = Math.max(1, ...rows.flatMap((r) => [r.buyNet, r.rentNet]));
   const min = Math.min(0, ...rows.flatMap((r) => [r.buyNet, r.rentNet]));
   const x = (y: number) => pad.l + ((y - 1) / Math.max(1, rows.length - 1)) * (W - pad.l - pad.r);
@@ -29,8 +29,14 @@ export function Chart({ rows }: { rows: YearRow[] }) {
           </text>
         ) : null,
       )}
-      <polyline points={line((r) => r.buyNet)} fill="none" stroke="#0f766e" strokeWidth={2.5} />
-      <polyline points={line((r) => r.rentNet)} fill="none" stroke="#b45309" strokeWidth={2.5} />
+      <polyline points={line((r) => r.buyNet)} fill="none" stroke="#1b4fb8" strokeWidth={3} />
+      <polyline points={line((r) => r.rentNet)} fill="none" stroke="#c2570c" strokeWidth={3} />
+      {rows.length > 0 && (
+        <>
+          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].buyNet) + 4} fontSize={12} fontWeight={700} fill="#1b4fb8">Buy</text>
+          <text x={x(rows[rows.length - 1].year) + 6} y={y(rows[rows.length - 1].rentNet) + 4} fontSize={12} fontWeight={700} fill="#c2570c">Rent</text>
+        </>
+      )}
     </svg>
   );
 }
